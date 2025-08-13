@@ -4,8 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="tac.css"></link>
 </head>
+<style>
+    body{
+    text-align: center;
+    font-style: oblique;
+    color: aliceblue;
+    font-size: 200%;
+    background-image: url(image.jpg);
+    border: 25%;
+}
+
+#box {
+  height: 50vh;
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 3px;
+  justify-content: center;
+  position: relative;
+}
+
+.but {
+  width: 100px;
+  height: 110px;
+  max-width: 40vw;
+  max-height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 150%;
+  border-radius: 5%;
+  box-shadow: 2rem black;
+  background-color: rgb(237, 232, 243,);
+  color: black;
+  position: relative;
+}
+
+#reset, #new{
+    height: 5ex;
+    border-radius: 5ex;
+    background-color: black;
+    color: beige;
+    width: max-content;
+}
+
+.hide{
+    display: none;
+}
+
+</style>
 <body>
     <h1>TIC TAC TOE</h1>
     <div id="box">
@@ -25,6 +72,100 @@
     </div>
     <br></br>
     <button id="reset" >Reset Button</button>
-    <script src="script.js"></script>
+    <script >
+        let buttons = document.querySelectorAll(".but");
+let resetGame = document.querySelector("#reset");
+let newGame = document.querySelector("#new");
+let msg = document.querySelector("#msg");
+let msgContainer = document.querySelector(".hide");
+
+let turnO=true;
+let count = 0;
+
+const winPatterns=[[0,1,2],
+[0,3,6],
+[0,4,8],
+[1,4,7],
+[2,5,8],
+[3,4,5],
+[6,7,8],
+[2,4,6]
+
+];
+
+const reset = () => {
+    turnO=true;
+    count = 0;
+    enableButtons();
+    msgContainer.classList.add("hide");
+};
+
+
+buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+        console.log("box was clicked");
+        if(turnO){
+            button.innerText="O";
+            turnO=false;
+        }
+        else{
+            button.innerText="X"
+            turnO=true;
+        }
+        button.disabled=true;
+        count++;
+
+        let isWinner = checkWinner();
+
+        if (count === 9 && !isWinner) {
+            gameDraw();
+        }
+    });
+});
+
+const gameDraw = () => {
+  msg.innerText = `Game was a Draw.`;
+  msgContainer.classList.remove("hide");
+  disableButtons();
+};
+
+const disableButtons = () => {
+    for(let button of buttons) {
+       button.disabled = true;
+    }
+};
+
+const enableButtons = () => {
+    for(let button of buttons) {
+       button.disabled = false;
+       button.innerText= "";
+    }
+};
+
+const showWinner = (winner) => {
+    msg.innerText = `Congratulations, Winner is ${winner} `;
+    msgContainer.classList.remove("hide");
+    disableButtons();
+};
+
+const checkWinner=() => {
+    for ( let pattern of winPatterns) {
+        let posVal=buttons[pattern[0]].innerText;
+        let pos1Val= buttons[pattern[1]].innerText;  
+        let pos2Val=buttons[pattern[2]].innerText;
+
+        if(posVal !="" && pos1Val != "" && pos2Val != "") {
+            if(posVal == pos1Val && pos1Val == pos2Val) {
+                console.log("Winner", posVal);
+                showWinner(posVal);
+                return true;
+            }
+        }
+    }
+};
+
+newGame.addEventListener("click", reset);
+resetGame.addEventListener("click", reset);
+    </script>
 </body>
 </html>
